@@ -17,7 +17,8 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
         getgenv().Lock_Loaded = 'Close';
         _Noti('Valerian Lock Loaded Already!')
         task.wait()
-        coroutine.resume()
+        coroutine.resume(_ActiveScript)
+        _Noti('Attempting To Restart!')
 		return
 	end
 	
