@@ -16,8 +16,8 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     end
 
 	if (getgenv().Lock_Loaded or false) then
-       _Noti(`Valerian Lock Loaded Already!`)
-       return
+       _Noti(`Reloading Valerian!`,false)
+       getgenv().Lock_Loaded = 'Close'
 	end
 	
     _Noti(`Valerian V{Version} Loaded!`)
@@ -32,7 +32,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 0.35;
+        Offset = 0.45;
     }
 	
 	--// Configuration
@@ -49,12 +49,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	};
 	
 	--{Varibles}--
-	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.015,LastTime = 0}
+	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.0075,LastTime = 0}
 	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
 	local Mouse = Player:GetMouse()
 	local Target = nil
+    local _Connections = {}
 	
 	--// Core
 	
@@ -63,6 +64,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if not Item:IsA(`Model`) then continue end
 			if Item == Character then continue end
 			if not Item:FindFirstChild(`HumanoidRootPart`) then continue end
+            if Item.Name == Character.Name then continue end
 			local MouseCFrame = Mouse.Hit
 			local EHRP:BasePart = Item:FindFirstChild(`HumanoidRootPart`)
             if not EHRP then continue end
@@ -77,7 +79,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		end
 	end
 	
-	Services.UserInputService.InputBegan:Connect(function(Input,GPE)
+    local function _Disconnect()
+       for Index:number,Connection in pairs(_Connections) do
+          Connection:Disconnect()
+       end
+    end
+
+	_Connections['Input'] = Services.UserInputService.InputBegan:Connect(function(Input,GPE)
 		if GPE then return end
 		if Input.KeyCode == Config.Lock_Keybind then
 			if not Target then
@@ -91,8 +99,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		end
 	end)
 	
-	Services.RunService.RenderStepped:Connect(function()
+	_Connections['RunService'] = Services.RunService.RenderStepped:Connect(function()
         Config = getgenv().Config
+        if getgenv().Lock_Loaded == 'Close' then
+           _Disconnect()
+           coroutine.close(_ActiveScript)
+        end
+
 		if Target then
 			if not Enabled then return end
 			if not Target:IsA(`Model`) then return end
@@ -100,7 +113,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0,0,0)).Unit*Config.Offset)))
+				Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
 			end
 		end
 	end)
