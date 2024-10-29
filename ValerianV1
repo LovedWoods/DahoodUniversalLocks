@@ -10,7 +10,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
         Sound:Play()
         end
     	game:GetService(`StarterGui`):SetCore(`SendNotification`,{
-		Title = `Valerian {Version}!`;
+		Title = `Valerian V{Version}!`;
 		Text = Text;
         })
     end
@@ -20,7 +20,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
        return
 	end
 	
-    _Noti(`Valerian {Version} Loaded!`)
+    _Noti(`Valerian V{Version} Loaded!`)
 	getgenv().Lock_Loaded = true
 	
 	export type Lock_Config = {
@@ -99,7 +99,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if tick() >= SmoothTween.LastTime then
 				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
 				SmoothTween.LastTime = tick() + SmoothTween.Time
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position) * Config.Offset
+				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position+Vector3.new(Config.Offset,Config.Offset,Config.Offset))
 			end
 		end
 	end)
