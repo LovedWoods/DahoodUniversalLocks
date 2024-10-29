@@ -1,7 +1,7 @@
 local _ActiveScript
 _ActiveScript = coroutine.resume(coroutine.create(function()
 	-- Etc Dont Touch
-    local Version = '1';
+    local _VVersion = 1;
     local function _Noti(Text:string,SoundPlay:boolean?)
         if (SoundPlay or true) == true then
         local Sound = Instance.new(`Sound`)
@@ -10,7 +10,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
         Sound:Play()
         end
     	game:GetService(`StarterGui`):SetCore(`SendNotification`,{
-		Title = `Valerian V{Version}!`;
+		Title = `Valerian V{_VVersion}!`;
 		Text = Text;
         })
     end
@@ -21,7 +21,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
        task.wait(1)
 	end
 	
-    _Noti(`Valerian V{Version} Loaded!`)
+    _Noti(`Valerian V{_VVersion} Loaded!`)
 	getgenv().Lock_Loaded = true
 	
 	export type Lock_Config = {
@@ -33,7 +33,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 0.45;
+        Offset = 1;
     }
 	
 	--// Configuration
@@ -50,7 +50,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	};
 	
 	--{Varibles}--
-	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.0075,LastTime = 0}
+	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.015,LastTime = 0}
 	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
@@ -111,14 +111,14 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if not Enabled then return end
 			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
-				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
+				local EHRP:BasePart = Target:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
                 local _MoveDir = _EHumanoid.MoveDirection
-				if _MoveDir.Magnitude > 1 then
+				if _MoveDir.Magnitude >= 1 then
                    Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
                 else
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position)
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position))
                 end
 			end
 		end
