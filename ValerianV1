@@ -18,6 +18,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	if (getgenv().Lock_Loaded or false) then
        _Noti(`Reloading Valerian!`,false)
        getgenv().Lock_Loaded = 'Close'
+       task.wait(1)
 	end
 	
     _Noti(`Valerian V{Version} Loaded!`)
@@ -70,7 +71,6 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
             if not EHRP then continue end
             if not Item:FindFirstChild(`Humanoid`) then return end
 			local Range = math.round((EHRP.CFrame.Position-MouseCFrame.Position).Magnitude)
-			print(SmoothTween.Time)
 			if Range <= 20 then
 				Target = Item
                 _Noti(`Valerian Locked On To {Target.Name}`)
@@ -79,8 +79,8 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		end
 	end
 	
-    local function _Disconnect()
-       for Index:number,Connection in pairs(_Connections) do
+    local function Disconnect()
+       for Index:number,Connection:RBXScriptConnection in pairs(_Connections) do
           Connection:Disconnect()
        end
     end
@@ -96,13 +96,14 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			end
 		elseif Input.KeyCode == Config.Enable_Keybind then
 			Enabled = not Enabled
+            _Noti(`Lock Is {if Enabled == true then 'Enabled' else 'Disabled'}`)
 		end
 	end)
 	
 	_Connections['RunService'] = Services.RunService.RenderStepped:Connect(function()
         Config = getgenv().Config
         if getgenv().Lock_Loaded == 'Close' then
-           _Disconnect()
+           Disconnect()
            coroutine.close(_ActiveScript)
         end
 
@@ -113,7 +114,12 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
+                local _MoveDir = _EHumanoid.MoveDirection
+				if _MoveDir.Magnitude > 1 then
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
+                else
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position)
+                end
 			end
 		end
 	end)
