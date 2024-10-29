@@ -1,56 +1,56 @@
 local _ActiveScript
 _ActiveScript = coroutine.resume(coroutine.create(function()
 	-- Etc Dont Touch
-
+    local Version = '1';
     local function _Noti(Text:string,SoundPlay:boolean?)
         if (SoundPlay or true) == true then
-        local Sound = Instance.new("Sound")
-        Sound.SoundId = "rbxassetid://8486683243"
-        Sound.Parent = game:GetService('SoundService')
+        local Sound = Instance.new(`Sound`)
+        Sound.SoundId = `rbxassetid://8486683243`
+        Sound.Parent = game:GetService(`SoundService`)
         Sound:Play()
         end
-    	game:GetService("StarterGui"):SetCore("SendNotification",{
-		Title = "Valerian V1!";
+    	game:GetService(`StarterGui`):SetCore(`SendNotification`,{
+		Title = `Valerian {Version}!`;
 		Text = Text;
         })
     end
 
 	if (getgenv().Lock_Loaded or false) then
-		return _Noti('Valerian Lock Loaded Already!')
+       _Noti(`Valerian Lock Loaded Already!`)
+       return
 	end
 	
-    _Noti('Valerian V1 Loaded!')
+    _Noti(`Valerian {Version} Loaded!`)
 	getgenv().Lock_Loaded = true
 	
 	export type Lock_Config = {
 		Lock_Keybind:Enum;
 		Enable_Keybind:Enum;
 		Offset:number;
-		Enabled:boolean;
 	}
 	
 	getgenv().Config = {
 		Lock_Keybind = Enum.KeyCode.T;
 		Enable_Keybind = Enum.KeyCode.Y	;
 		Offset = 0.25;
-		Enabled = true;
 	}
 	
 	--// Configuration
+    local Enabled = true;
 	local PlayerDirectory = game.Workspace
 	local Config:Lock_Config = getgenv().Config
 	--// Services
 	local Services = {
-		RunService = game:GetService('RunService');
-		Players = game:GetService('Players');
-		TextChatService = game:GetService('TextChatService');
-		TweenService = game:GetService('TweenService');
-		UserInputService = game:GetService('UserInputService');
+		RunService = game:GetService(`RunService`);
+		Players = game:GetService(`Players`);
+		TextChatService = game:GetService(`TextChatService`);
+		TweenService = game:GetService(`TweenService`);
+		UserInputService = game:GetService(`UserInputService`);
 	};
 	
 	--{Varibles}--
 	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.015,LastTime = 0}
-	local Camera = workspace:WaitForChild('Camera')
+	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
 	local Mouse = Player:GetMouse()
@@ -60,13 +60,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	
 	local function FindNewTarget()
 		for Index,Item in pairs(PlayerDirectory:GetDescendants()) do
-			if not Item:IsA('Model') then continue end
+			if not Item:IsA(`Model`) then continue end
 			if Item == Character then continue end
-			if not Item:FindFirstChild('HumanoidRootPart') then continue end
+			if not Item:FindFirstChild(`HumanoidRootPart`) then continue end
 			local MouseCFrame = Mouse.Hit
-			local EHRP:BasePart = Item:FindFirstChild('HumanoidRootPart')
+			local EHRP:BasePart = Item:FindFirstChild(`HumanoidRootPart`)
             if not EHRP then continue end
-            if not Item:FindFirstChild('Humanoid') then return end
+            if not Item:FindFirstChild(`Humanoid`) then return end
 			local Range = math.round((EHRP.CFrame.Position-MouseCFrame.Position).Magnitude)
 			print(SmoothTween.Time)
 			if Range <= 20 then
@@ -87,17 +87,17 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
                 _Noti(`Unlocked!`)
 			end
 		elseif Input.KeyCode == Config.Enable_Keybind then
-			Config.Enabled = not Config.Enabled
-
+			Enabled = not Enabled
 		end
 	end)
 	
 	Services.RunService.RenderStepped:Connect(function()
+        Config = getgenv().Config
 		if Target then
-			if not Config.Enabled then return end
-			if not Target:IsA('Model') then return end
+			if not Enabled then return end
+			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
-				local EHRP = Target:FindFirstChild('HumanoidRootPart')
+				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
 				SmoothTween.LastTime = tick() + SmoothTween.Time
 				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position) * Config.Offset
 			end
