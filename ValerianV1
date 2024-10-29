@@ -93,6 +93,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	end)
 	
 	Services.RunService.RenderStepped:Connect(function()
+        Config = getgenv().Config
 		if Target then
 			if not Config.Enabled then return end
 			if not Target:IsA('Model') then return end
