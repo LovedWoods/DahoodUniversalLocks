@@ -2,11 +2,13 @@ local _ActiveScript
 _ActiveScript = coroutine.resume(coroutine.create(function()
 	-- Etc Dont Touch
 
-    local function _Noti(Text)
-    	local Sound = Instance.new("Sound")
+    local function _Noti(Text:string,SoundPlay:boolean?)
+        if (SoundPlay or true) == true then
+        local Sound = Instance.new("Sound")
         Sound.SoundId = "rbxassetid://8486683243"
         Sound.Parent = game:GetService('SoundService')
         Sound:Play()
+        end
     	game:GetService("StarterGui"):SetCore("SendNotification",{
 		Title = "Valerian V1!";
 		Text = Text;
@@ -14,12 +16,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     end
 
 	if (getgenv().Lock_Loaded or false) then
-        getgenv().Lock_Loaded = 'Close';
-        _Noti('Valerian Lock Loaded Already!')
-        task.wait()
-        coroutine.resume(_ActiveScript)
-        _Noti('Attempting To Restart!')
-		return
+		return _Noti('Valerian Lock Loaded Already!')
 	end
 	
     _Noti('Valerian V1 Loaded!')
@@ -96,12 +93,6 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	end)
 	
 	Services.RunService.RenderStepped:Connect(function()
-
-        if getgenv().Lock_Loaded == "Close" then
-            coroutine.yield(_ActiveScript)
-            getgenv().Lock_Loaded = false
-        end
-
 		if Target then
 			if not Config.Enabled then return end
 			if not Target:IsA('Model') then return end
