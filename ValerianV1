@@ -29,13 +29,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		Enable_Keybind:Enum;
 		Offset:number;
 	}
-    
+	
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
         Offset = 1;
     }
-	
+
 	--// Configuration
     local Enabled = true;
 	local PlayerDirectory = game.Workspace
@@ -72,6 +72,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
             if not Item:FindFirstChild(`Humanoid`) then return end
 			local Range = math.round((EHRP.CFrame.Position-MouseCFrame.Position).Magnitude)
 			if Range <= 20 then
+                if Item and Item:FindFirstChild('BodyEffects') and (Item:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value or false) ~= false then continue end
 				Target = Item
                 _Noti(`Valerian Locked On To {Target.Name}`)
                 break
@@ -105,6 +106,11 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
         if getgenv().Lock_Loaded == 'Close' then
            Disconnect()
            coroutine.close(_ActiveScript)
+        end
+
+        if Target and Target:FindFirstChild('BodyEffects') and (Target:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value or false) == true then
+           _Noti(`{Target.Name} Has Been Knocked!`)
+           Target = nil
         end
 
 		if Target then
