@@ -33,7 +33,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 1;
+        Offset = 0.55;
     }
 
 	--// Configuration
@@ -50,7 +50,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	};
 	
 	--{Varibles}--
-	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.015,LastTime = 0}
+	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.009,LastTime = 0}
 	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
@@ -72,10 +72,11 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
             if not Item:FindFirstChild(`Humanoid`) then return end
 			local Range = math.round((EHRP.CFrame.Position-MouseCFrame.Position).Magnitude)
 			if Range <= 20 then
-                if Item and Item:FindFirstChild('BodyEffects') and (Item:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value or false) ~= false then continue end
-				Target = Item
-                _Noti(`Valerian Locked On To {Target.Name}`)
-                break
+                if Item and Item:FindFirstChild('BodyEffects') and Item:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value == false then 
+                    Target = Item
+                    _Noti(`Valerian Locked On To {Target.Name}`)
+                    break
+                end
 			end
 		end
 	end
@@ -105,10 +106,12 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
         Config = getgenv().Config
         if getgenv().Lock_Loaded == 'Close' then
            Disconnect()
+           pcall(function()
            coroutine.close(_ActiveScript)
+           end)
         end
 
-        if Target and Target:FindFirstChild('BodyEffects') and (Target:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value or false) == true then
+        if Target and Target:FindFirstChild('BodyEffects') and Target:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value == true then
            _Noti(`{Target.Name} Has Been Knocked!`)
            Target = nil
         end
