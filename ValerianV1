@@ -33,7 +33,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 0.55;
+        Offset = 2;
     }
 
 	--// Configuration
@@ -64,10 +64,10 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		for Index,Item in pairs(PlayerDirectory:GetDescendants()) do
 			if not Item:IsA(`Model`) then continue end
 			if Item == Character then continue end
-			if not Item:FindFirstChild(`HumanoidRootPart`) then continue end
+            local EHRP:BasePart = Item:FindFirstChild(`HumanoidRootPart`)
+			if not EHRP then continue end
             if Item.Name == Character.Name then continue end
 			local MouseCFrame = Mouse.Hit
-			local EHRP:BasePart = Item:FindFirstChild(`HumanoidRootPart`)
             if not EHRP then continue end
             if not Item:FindFirstChild(`Humanoid`) then return end
 			local Range = math.round((EHRP.CFrame.Position-MouseCFrame.Position).Magnitude)
@@ -115,19 +115,25 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
            _Noti(`{Target.Name} Has Been Knocked!`)
            Target = nil
         end
+		
+		if Character and Character:FindFirstChild('BodyEffects') and Character:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value == true then
+           Target = nil
+        end
 
 		if Target then
 			if not Enabled then return end
 			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
-				local EHRP:Instance = Target:FindFirstChild(`HumanoidRootPart`)
-                local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
+				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
+                local _EHumanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
                 local _MoveDir = _EHumanoid.MoveDirection
-				if _MoveDir.Magnitude >= 1 then
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
+                local _Offset = Config.Offset
+
+                if _MoveDir.Magnitude >= 1 then
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*_Offset)))
                 else
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position))
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position)
                 end
 			end
 		end
