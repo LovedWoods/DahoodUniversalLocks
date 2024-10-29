@@ -117,12 +117,12 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if not Enabled then return end
 			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
-				local EHRP:BasePart = Target:FindFirstChild(`HumanoidRootPart`)
+				local EHRP:Instance = Target:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
                 local _MoveDir = _EHumanoid.MoveDirection
 				if _MoveDir.Magnitude >= 1 then
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
                 else
                    Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position))
                 end
