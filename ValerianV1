@@ -12,9 +12,13 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		Text = Text;
         })
     end
-    
+
 	if (getgenv().Lock_Loaded or false) then
-		return _Noti('Valerian Lock Loaded Already!')
+        getgenv().Lock_Loaded = 'Close';
+        _Noti('Valerian Lock Loaded Already!')
+        task.wait()
+        coroutine.resume()
+		return
 	end
 	
     _Noti('Valerian V1 Loaded!')
@@ -45,8 +49,6 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		TweenService = game:GetService('TweenService');
 		UserInputService = game:GetService('UserInputService');
 	};
-	
-	
 	
 	--{Varibles}--
 	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.015,LastTime = 0}
@@ -93,7 +95,12 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	end)
 	
 	Services.RunService.RenderStepped:Connect(function()
-        Config = getgenv().Config
+
+        if getgenv().Lock_Loaded == "Close" then
+            coroutine.yield(_ActiveScript)
+            getgenv().Lock_Loaded = false
+        end
+
 		if Target then
 			if not Config.Enabled then return end
 			if not Target:IsA('Model') then return end
