@@ -28,12 +28,12 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 		Enable_Keybind:Enum;
 		Offset:number;
 	}
-	
-	getgenv().Config = {
-		Lock_Keybind = Enum.KeyCode.T;
-		Enable_Keybind = Enum.KeyCode.Y	;
-		Offset = 0.25;
-	}
+    
+    getgenv().Config = {
+        Lock_Keybind = Enum.KeyCode.T;
+        Enable_Keybind = Enum.KeyCode.Y	;
+        Offset = 0.35;
+    }
 	
 	--// Configuration
     local Enabled = true;
@@ -98,8 +98,9 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
 				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
+                local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position)
+				Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((_EHumanoid.MoveDirection or Vector3.new(0,0,0)).Unit*Config.Offset)))
 			end
 		end
 	end)
