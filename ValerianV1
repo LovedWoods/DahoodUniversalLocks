@@ -99,7 +99,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if tick() >= SmoothTween.LastTime then
 				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
 				SmoothTween.LastTime = tick() + SmoothTween.Time
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position+Vector3.new(Config.Offset,Config.Offset,Config.Offset))
+				Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position)
 			end
 		end
 	end)
