@@ -33,7 +33,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 5;
+        Offset = 0.2;
     }
 
 	--// Configuration
@@ -120,17 +120,15 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 			if not Enabled then return end
 			if not Target:IsA(`Model`) then return end
 			if tick() >= SmoothTween.LastTime then
-				local EHRP:Instance = Target:FindFirstChild(`HumanoidRootPart`)
+				local EHRP = Target:FindFirstChild(`HumanoidRootPart`)
+                local HRP = Character:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
                 local _Offset = Config.Offset
+                local _Random = Random.new():NextNumber(0,3)
                 local _Distance = (Target.WorldPivot.Position-Character.WorldPivot.Position).Magnitude or 0
-                local _MoveDir = _EHumanoid.MoveDirection or Vector3.new()
                 local _SelfMoveDirection = Character:FindFirstChildWhichIsA('Humanoid').MoveDirection or Vector3.new()
-                _Offset = _Offset*(_Distance/1000)/_Offset
-				_Offset += _SelfMoveDirection.Magnitude/10
-                _Offset += _MoveDir.Magnitude/10
-                Camera.CFrame = CFrame.new(Camera.CFrame.Position,((EHRP.Position+Vector3.new(0,-0.4,0))+((EHRP.Position or Vector3.new(0.1,0.1,0.1)+_SelfMoveDirection).Unit*_Offset)))
+                Camera.CFrame = CFrame.new(Camera.CFrame.Position,EHRP.Position+(((EHRP.Velocity+Vector3.new(1,1,1)).Unit*_Offset) or Vector3.new()))
 			end
 		end
 	end)
