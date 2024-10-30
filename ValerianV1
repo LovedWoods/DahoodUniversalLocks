@@ -1,7 +1,7 @@
 local _ActiveScript
 _ActiveScript = coroutine.resume(coroutine.create(function()
 	-- Etc Dont Touch
-    local _VVersion = 1;
+    local _VVersion = 1.1;
     local function _Noti(Text:string,SoundPlay:boolean?)
         if (SoundPlay or true) == true then
         local Sound = Instance.new(`Sound`)
