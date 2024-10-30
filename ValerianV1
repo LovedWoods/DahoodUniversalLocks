@@ -50,7 +50,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	};
 	
 	--{Varibles}--
-	local SmoothTween:{Time:number,LastTime:number} = {Time = 0,LastTime = 0}
+	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.010,LastTime = 0}
 	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
@@ -115,6 +115,11 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
            _Noti(`{Target.Name} Has Been Knocked!`)
            Target = nil
         end
+        
+        if Character and Character:FindFirstChild('BodyEffects') and Character:FindFirstChild('BodyEffects'):FindFirstChild('K.O').Value == true then
+           _Noti(`{Target.Name} Has Been Knocked!`)
+           Target = nil
+        end
 
 		if Target then
 			if not Enabled then return end
@@ -124,11 +129,14 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
                 local _Offset = Config.Offset
+                local _Distance = (Target.WorldPivot.Position-Character.WorldPivot.Position).Magnitude
                 local _MoveDir = _EHumanoid.MoveDirection
-				if _MoveDir.Magnitude >= 1 then
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)).Unit*-_Offset)))
+                local _SelfMoveDirection = Character:FindFirstChildWhichIsA('Humanoid').MoveDirection or Vector3.new()
+                _Offset = math.round(_Offset*(math.floor(_Distance)/1000)/_Offset)
+				if math.floor(_MoveDir.Magnitude) >= 1 then
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)+_SelfMoveDirection).Unit*_Offset)))
                 else
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position))
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position)+_SelfMoveDirection)
                 end
 			end
 		end
