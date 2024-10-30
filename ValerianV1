@@ -1,7 +1,7 @@
 local _ActiveScript
 _ActiveScript = coroutine.resume(coroutine.create(function()
 	-- Etc Dont Touch
-    local _VVersion = 1.1;
+    local _VVersion = 1.2;
     local function _Noti(Text:string,SoundPlay:boolean?)
         if (SoundPlay or true) == true then
         local Sound = Instance.new(`Sound`)
@@ -133,11 +133,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
                 local _MoveDir = _EHumanoid.MoveDirection
                 local _SelfMoveDirection = Character:FindFirstChildWhichIsA('Humanoid').MoveDirection or Vector3.new()
                 _Offset = math.round(_Offset*(math.floor(_Distance)/1000)/_Offset)
-				if math.floor(_MoveDir.Magnitude) >= 1 then
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)+_SelfMoveDirection).Unit*_Offset)))
-                else
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position)+_SelfMoveDirection)
-                end
+				Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Position or Vector3.new(0.1,0.1,0.1)+_SelfMoveDirection).Unit*_Offset)))
 			end
 		end
 	end)
