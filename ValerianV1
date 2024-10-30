@@ -33,7 +33,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
     getgenv().Config = {
         Lock_Keybind = Enum.KeyCode.T;
         Enable_Keybind = Enum.KeyCode.Y	;
-        Offset = 0.55;
+        Offset = -0.75;
     }
 
 	--// Configuration
@@ -50,7 +50,7 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 	};
 	
 	--{Varibles}--
-	local SmoothTween:{Time:number,LastTime:number} = {Time = 0.009,LastTime = 0}
+	local SmoothTween:{Time:number,LastTime:number} = {Time = 0,LastTime = 0}
 	local Camera = workspace:WaitForChild(`Camera`)
 	local Player = Services.Players.LocalPlayer
 	local Character:Model = Player.Character or Player.CharacterAdded:Wait()
@@ -123,9 +123,10 @@ _ActiveScript = coroutine.resume(coroutine.create(function()
 				local EHRP:Instance = Target:FindFirstChild(`HumanoidRootPart`)
                 local _EHumanoid:Humanoid = Target:FindFirstChildOfClass('Humanoid')
 				SmoothTween.LastTime = tick() + SmoothTween.Time
+                local _Offset = Config.Offset
                 local _MoveDir = _EHumanoid.MoveDirection
 				if _MoveDir.Magnitude >= 1 then
-                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)).Unit*Config.Offset)))
+                   Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position+((EHRP.Velocity or Vector3.new(0.1,0.1,0.1)).Unit*-_Offset)))
                 else
                    Camera.CFrame = CFrame.new(Camera.CFrame.Position,(EHRP.Position))
                 end
