@@ -1,0 +1,50 @@
+if getgenv().Enabled == true then
+   return
+end
+local function SendNoti(Text)
+game:GetService('StarterGui'):SetCore('SendNotification',{
+    ['Title'] = 'Woods Trigger Bot!', ['Text'] = Text,
+});
+end
+
+SendNoti('Loaded')
+getgenv().Enabled = true 
+
+local vim = game:GetService('VirtualInputManager')
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local Enabled = true;
+local Bindable = Instance.new('BindableEvent')
+
+game:GetService('UserInputService').InputBegan:Connect(function(Input,gpe)
+   if gpe then return end
+   if Input.KeyCode == Enum.KeyCode.V then
+      Enabled = not Enabled
+      SendNoti(`TB Is {if Enabled then 'Enabled' else 'Disabled'}!`);
+   end
+end)
+
+local function SendMouseButton(Key:number?) 
+   task.spawn(function()
+       Key = math.clamp(tonumber(Key),0,2)
+       vim:SendMouseButtonEvent(0,0, Key, true, nil, 0)
+       task.wait()
+       vim:SendMouseButtonEvent(0,0, Key, false, nil, 0)
+   end)
+end
+
+Bindable.Event:Connect(function()
+    SendMouseButton(0)
+end)
+
+game:GetService('RunService').RenderStepped:Connect(function()
+    Mouse.TargetFilter = game.Players.LocalPlayer.Character or nil
+    if Mouse.Target and Enabled then
+       task.spawn(function()
+       local TargetPart = Mouse.Target
+       local Possible = TargetPart:FindFirstAncestorWhichIsA('Model') or nil
+       if Possible and game.Players:FindFirstChild(Possible.Name) ~= nil then
+          Bindable:Fire()   
+       end
+       end)
+    end
+end)
